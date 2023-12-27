@@ -5,12 +5,20 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   parcel:
     specifier: ^2.10.3
     version: 2.10.3
   preact:
     specifier: ^10.19.3
     version: 10.19.3
+
+devDependencies:
+  '@types/lodash':
+    specifier: ^4.14.202
+    version: 4.14.202
 
 packages:
 
@@ -1101,6 +1109,10 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: false
 
+  /@types/lodash@4.14.202:
+    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
+    dev: true
+
   /abortcontroller-polyfill@1.7.5:
     resolution: {integrity: sha512-JMJ5soJWP18htbbxJjG7bG6yuI6pRhgJ0scHHTfkUjf6wjP912xZWvM+A4sJK3gqd9E8fcPbDnOefbA9Th/FIQ==}
     dev: false
@@ -1582,6 +1594,10 @@ packages:
       '@lmdb/lmdb-linux-arm64': 2.8.5
       '@lmdb/lmdb-linux-x64': 2.8.5
       '@lmdb/lmdb-win32-x64': 2.8.5
+    dev: false
+
+  /lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /lru-cache@6.0.0:

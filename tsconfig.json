@@ -8,5 +8,9 @@
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
         "jsxFactory": "preact.createElement"
-    }
+    },
+    "include": [
+        "src/**/*",
+        "globals.d.ts"
+    ]
 }
