@@ -1,6 +1,3 @@
-import * as preact from 'preact';
-
-
 export default function App() {
   return (
     <div>
