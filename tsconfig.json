@@ -8,11 +8,5 @@
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
         "jsxFactory": "preact.createElement"
-    },
-	"_maybe_alias": {
-		"react": "preact/compat",
-		"react-dom/test-utils": "preact/test-utils",
-		"react-dom": "preact/compat",
-		"react/jsx-runtime": "preact/jsx-runtime"
-	}
+    }
 }
