@@ -1,0 +1,13 @@
+{
+	"source": "src/index.html",
+	"scripts": {
+		"dev": "parcel",
+		"build": "parcel build",
+		"clean": "rm -rf dist && rm -rf .*cache",
+		"clean-build": "npm run clean && npm run build"
+	},
+	"dependencies": {
+		"parcel": "^2.10.3",
+		"preact": "^10.19.3"
+	}
+}
