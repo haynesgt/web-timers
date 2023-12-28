@@ -3,6 +3,19 @@ import { useEffect, useReducer, useRef } from "preact/hooks";
 import formatTime from "./formatTime";
 
 import { Timer, AppState, AppDispatch, reducer, newId } from "./reducer";
+import { Alarm } from "./alarm";
+
+function getAlarm() {
+  if ("myAlarm" in window) return window.myAlarm as Alarm;
+  const alarm = new Alarm();
+  Object.assign(window, {myAlarm: alarm});
+  return alarm;
+}
+
+window.addEventListener("mousedown", (e) => {
+  getAlarm();
+});
+
 
 export type TimerRowProps = {
   state: AppState;
@@ -173,6 +186,7 @@ class Notifier {
     if (wasNotifying === notifying) return;
     if (notifying) {
       new Notification(message);
+      getAlarm().play();
     }
     this.notifyingStatusById.set(id, notifying);
   }
