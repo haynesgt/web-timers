@@ -212,7 +212,7 @@ function TimerRow({timer, dispatch, state}: TimerRowProps) {
     <tr className="timer-row" draggable={true} data-timer-id={timer?.id} onDragEnd={onDragEnd} onDragOver={(e) => e.preventDefault()}>
       <td>
         {
-          timer?.isStarted && timer?.isRunning ?
+          timer?.isRunning ?
           timer?.newTimeLimit !== undefined ? timer?.newTimeLimit : formatTime(timer?.timeLimitMs || 0) :
             <LiveInput
               placeholder="0m0s"
