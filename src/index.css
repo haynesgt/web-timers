@@ -16,13 +16,9 @@ body, input, button {
   border: 1px solid black;
 }
 
-.timer-table tr {
-  
-}
 
 .timer-table td, .timer-table th {
   width: 30%;
-  height: 0%;
   border: 1px solid black;
   position: relative;
 }
@@ -52,7 +48,7 @@ body, input, button {
   background-color: transparent;
 }
 
-.timer-table button:hover {
+.timer-table button:hover, .timer-table input:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
