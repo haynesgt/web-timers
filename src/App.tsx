@@ -7,7 +7,6 @@ interface Timer {
   id?: string;
   timeLimitMs?: number;
   timeRemainingMs?: number;
-  isStarted?: boolean;
   isRunning?: boolean;
   lastUpdatedAt?: number;
   newTimeLimit?: string;
@@ -53,7 +52,6 @@ function getNewTimer(state: AppState): Timer {
     timeLimitMs: timeLimitMs,
     newTimeRemaining: state?.newTimerForm?.newTime,
     timeRemainingMs: timeLimitMs,
-    isStarted: false,
     isRunning: false,
     lastUpdatedAt: undefined,
   };
@@ -134,12 +132,9 @@ function reducer(state: AppState, action: AppAction): AppState {
             ...(action.updateTimer?.reset ? {
               timeRemainingMs: timer.timeLimitMs,
               newTimeRemaining: formatTime(timer.timeLimitMs || 0),
-              isStarted: false,
             } : {}),
             ...(action.updateTimer?.start ? {
-              isStarted: true,
               isRunning: true,
-              timeRemainingMs: timer.isStarted ? timer.timeRemainingMs : timer.timeLimitMs,
               lastUpdatedAt: undefined,
             } : {}),
             ...(action.updateTimer?.pause ? {
@@ -294,7 +289,7 @@ function TimerButtonGroup({timer, dispatch}: TimerButtonGroupProps) {
 
   return (
     <div className="button-group">
-      <button onClick={resetTimer} disabled={!timer?.isRunning && !timer?.isStarted}>{"<<"}</button>
+      <button onClick={resetTimer} disabled={!timer?.isRunning}>{"<<"}</button>
       <button onClick={stopTimer} disabled={!timer?.isRunning}>||</button>
       <button onClick={startTimer} disabled={timer?.isRunning}>&gt;</button>
       <button onClick={lapTimer} disabled={false}>v</button>
