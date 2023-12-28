@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
         "target": "es5",
+        "lib": ["es2020"],
         "module": "NodeNext",
         "outDir": "dist",
         "strict": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
-        "jsxFactory": "preact.createElement"
+        "jsxFactory": "preact.createElement",
+        "jsxFragmentFactory": "preact.Fragment",
     },
     "include": [
         "src/**/*",

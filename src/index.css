@@ -1,0 +1,79 @@
+body {
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+body, input, button {
+  font-size: max(12pt, 5vh);
+  font-family: sans-serif;
+}
+
+.timer-table {
+  width: 100%;
+  min-height: 100%;
+  position: absolute;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+.timer-table tr {
+  max-height: 5vh;
+}
+
+.timer-table td, .timer-table th {
+  width: 0%;
+  height: 0%;
+  border: 1px solid black;
+  position: relative;
+}
+
+.timer-table td {
+  text-align: right;
+}
+
+.timer-table th {
+  text-align: center;
+  max-height: 24px;
+}
+
+
+.timer-table td input {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: right;
+  border: none;
+  padding: none;
+}
+
+.timer-table td button {
+  background-color: white;
+}
+
+.timer-table td input::placeholder {
+  color: #888888;
+}
+
+.timer-table .button-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.timer-table .button-group button {
+  width: 100%;
+  height: 100%;
+  font-size: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
