@@ -5,20 +5,19 @@ body {
 }
 
 body, input, button {
-  font-size: max(12pt, 5vh);
+  font-size: 24pt;
   font-family: sans-serif;
 }
 
 .timer-table {
   width: 100%;
-  min-height: 100%;
   position: absolute;
   border-collapse: collapse;
   border: 1px solid black;
 }
 
 .timer-table tr {
-  max-height: 5vh;
+  
 }
 
 .timer-table td, .timer-table th {
