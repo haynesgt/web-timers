@@ -159,41 +159,6 @@ function LiveInput({value, setValue, onSubmit, ...props}: LiveInputProps) {
   );
 }
 
-function LiveInput2({value, setValue, onSubmit}: LiveInputProps) {
-  // overengineered maybe but input element does strange things
-  const ref = useRef<HTMLDivElement>(null);
-  function onInput(e: InputEvent) {
-    console.log(e);
-    const target = e?.currentTarget as HTMLDivElement;
-    //if (target.innerText.includes("\n")) {
-    //  target.innerText = target.innerText.replace(/\n/g, "");
-    //}
-    setValue?.(target?.innerText || "");
-  }
-  function onKeyDown(e: KeyboardEvent) {
-    if (e?.key === "Enter") {
-      if (onSubmit) {
-        onSubmit();
-      }
-      e.preventDefault();
-    }
-  }
-  function onPaste(e: ClipboardEvent) {
-    e.preventDefault();
-    const text = e.clipboardData?.getData('text/plain');
-    document.execCommand('insertText', false, text);
-  }
-  
-  useEffect(() => {
-    if (ref.current && ref.current.innerText !== value) {
-      ref.current.innerText = value || "";
-    }
-  }, [value]);
-  return (
-    <div ref={ref} contentEditable={true} onInput={onInput} onKeyDown={onKeyDown} onPaste={onPaste}/>
-  );
-}
-
 export default function App() {
   const [state, dispatch] = useReducer(reducer, {});
   Object.assign(window, {state, dispatch});
