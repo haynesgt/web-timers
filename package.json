@@ -2,7 +2,7 @@
 	"source": "src/index.html",
 	"scripts": {
 		"dev": "parcel",
-		"build": "parcel build",
+		"build": "parcel build --public-url .",
 		"clean": "rm -rf dist && rm -rf .*cache",
 		"clean-build": "npm run clean && npm run build",
 		"release-build": "npm run clean-build && cp -r dist release"
