@@ -48,8 +48,16 @@ body, input, button {
   padding: 0px;
 }
 
-.timer-table td button {
-  background-color: white;
+.timer-table button {
+  background-color: transparent;
+}
+
+.timer-table button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.timer-table button:active {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .timer-table td input::placeholder {

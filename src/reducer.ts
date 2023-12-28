@@ -15,6 +15,7 @@ export interface Timer {
   newTimeRemaining?: string;
   confirmDelete?: boolean;
   deleted?: boolean;
+  isNotifying?: boolean;
 }
 
 export interface NewTimerForm {
@@ -66,12 +67,14 @@ function getNewTimer(state: AppState): Timer {
 
 function updateTimerAt(timer: Timer, updateAt: number): Timer {
   if (!timer.isRunning || timer.timeRemainingMs === undefined) return timer;
-  const timeRemainingMs = timer.timeRemainingMs - (updateAt - (timer.lastUpdatedAt || updateAt));
+  const previousTimeRemainingMs = timer.timeRemainingMs || 0;
+  const nextTimeRemainingMs = previousTimeRemainingMs - (updateAt - (timer.lastUpdatedAt || updateAt));
   return {
     ...timer,
-    timeRemainingMs: timeRemainingMs,
-    newTimeRemaining: formatTime(timeRemainingMs),
+    timeRemainingMs: nextTimeRemainingMs,
+    newTimeRemaining: formatTime(nextTimeRemainingMs),
     lastUpdatedAt: updateAt,
+    isNotifying: timer.isRunning && (timer.timeLimitMs || 0) > 0 && nextTimeRemainingMs <= 0 && nextTimeRemainingMs > -1000,
   };
 }
 
@@ -122,50 +125,55 @@ export function reducer(state: AppState, action: AppAction): AppState {
   if (action.updateTimer) {
     return {
       ...state,
-      timers: (state.timers || []).flatMap((timer) => (
-        timer.id === action.updateTimer?.id ?
-        [
-          {
-            ...timer,
-            confirmDelete: false,
-            ...(action.updateTimer?.newTimeLimit !== undefined ? {
-              newTimeLimit: action.updateTimer?.newTimeLimit,
-              timeLimitMs: parseTime(action.updateTimer?.newTimeLimit),
-              timeRemainingMs: parseTime(action.updateTimer?.newTimeLimit),
-              newTimeRemaining: formatTime(parseTime(action.updateTimer?.newTimeLimit)),
-            } : {}),
-            ...(action.updateTimer?.newTimeRemaining !== undefined ? {
-              newTimeRemaining: action.updateTimer?.newTimeRemaining,
-              timeRemainingMs: parseTime(action.updateTimer?.newTimeRemaining),
-            } : {}),
-            ...(action.updateTimer?.reset ? {
-              timeRemainingMs: timer.timeLimitMs,
-              newTimeRemaining: formatTime(timer.timeLimitMs || 0),
-            } : {}),
-            ...(action.updateTimer?.start ? {
-              isRunning: true,
-              lastUpdatedAt: undefined,
-            } : {}),
-            ...(action.updateTimer?.pause ? {
-              isRunning: false,
-              newTimeRemaining: formatTime(timer.timeRemainingMs || 0),
-            } : {}),
-            ...(action.updateTimer?.delete ? {
-              confirmDelete: true,
-              deleted: timer.confirmDelete
-            } : {}),
-            ...(action.updateTimer?.lap ? {
-              isRunning: false,
-            } : {}),
-          },
-          ...(action.updateTimer!.lap ? [
+      timers: (state.timers || []).flatMap((timer) => {
+        return (
+          timer.id === action.updateTimer?.id ?
+          [
             {
               ...timer,
-              id: newId(),
-            }
-          ] : []),
-        ] : [timer]
-      )).filter(t => !t.deleted)
+              confirmDelete: false,
+              ...(action.updateTimer?.newTimeLimit !== undefined ? {
+                newTimeLimit: action.updateTimer?.newTimeLimit,
+                timeLimitMs: parseTime(action.updateTimer?.newTimeLimit),
+                timeRemainingMs: parseTime(action.updateTimer?.newTimeLimit),
+                newTimeRemaining: formatTime(parseTime(action.updateTimer?.newTimeLimit)),
+              } : {}),
+              ...(action.updateTimer?.newTimeRemaining !== undefined ? {
+                newTimeRemaining: action.updateTimer?.newTimeRemaining,
+                timeRemainingMs: parseTime(action.updateTimer?.newTimeRemaining),
+              } : {}),
+              ...(action.updateTimer?.reset ? {
+                timeRemainingMs: timer.timeLimitMs,
+                newTimeRemaining: formatTime(timer.timeLimitMs || 0),
+                isNotifying: false,
+              } : {}),
+              ...(action.updateTimer?.start ? {
+                isRunning: true,
+                lastUpdatedAt: undefined,
+                isNotifying: false,
+              } : {}),
+              ...(action.updateTimer?.pause ? {
+                isRunning: false,
+                newTimeRemaining: formatTime(timer.timeRemainingMs || 0),
+                isNotifying: false,
+              } : {}),
+              ...(action.updateTimer?.delete ? {
+                confirmDelete: true,
+                deleted: timer.confirmDelete
+              } : {}),
+              ...(action.updateTimer?.lap ? {
+                isRunning: false,
+              } : {}),
+            },
+            ...(action.updateTimer!.lap ? [
+              {
+                ...timer,
+                id: newId(),
+              }
+            ] : []),
+          ] : [timer]
+        )
+      }).filter(t => !t.deleted)
     };
   }
   if (action.reorder) {

@@ -165,6 +165,20 @@ function LiveInput({value, setValue, onSubmit, ...props}: LiveInputProps) {
   );
 }
 
+class Notifier {
+  notifyingStatusById = new Map<string, boolean>();
+
+  setNotifying(id: string, notifying: boolean, message: string) {
+    const wasNotifying = this.notifyingStatusById.get(id);
+    if (wasNotifying === notifying) return;
+    if (notifying) {
+      new Notification(message);
+    }
+    this.notifyingStatusById.set(id, notifying);
+  }
+}
+const notifier = new Notifier();
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, {});
   Object.assign(window, {state, dispatch});
@@ -175,6 +189,7 @@ export default function App() {
     } else {
       dispatch({setState: createDefaultState()});
     }
+    Object.assign(window, {resetAllTimers: () => { dispatch({setState: createDefaultState()}); }})
   }, []);
   useEffect(() => {
     localStorage.setItem("state", JSON.stringify(state));
@@ -191,6 +206,22 @@ export default function App() {
       running = false;
     };
   });
+  useEffect(() => {
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission().then(permission => {
+        // if (permission === 'granted') {
+        //   new Notification('Alerts will display here!');
+        // }
+      });
+    }
+  }, []);
+  useEffect(() => {
+    state.timers?.forEach((timer) => {
+      if (timer) {
+        notifier.setNotifying(timer.id!, timer.isNotifying || false, "Timer done: " + formatTime(timer.timeLimitMs || 0));
+      }
+    });
+  }, [state]);
   return (
     <div>
       <table className="timer-table">

@@ -1,4 +1,4 @@
-export default function formatTime(ms: number): string {
+export default function formatTime(ms: number, short: boolean = false): string {
   let str = "";
   const negative = ms < 0;
   if (negative) {
@@ -25,7 +25,9 @@ export default function formatTime(ms: number): string {
     str += `${seconds.toString().padStart(2, "0")}`;
     nextMs -= seconds * 1000;
   }
-  str += `.${Math.round(nextMs).toString().padStart(3, "0")}`;
+  if (ms >= 0.001 || !short) {
+    str += `.${Math.round(nextMs).toString().padStart(3, "0")}`;
+  }
   if (str[0] === "0") {
     str = str.slice(1);
   }
