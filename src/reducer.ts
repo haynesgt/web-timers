@@ -1,7 +1,7 @@
 import parseTime from "./parseTime";
 import formatTime from "./formatTime";
 
-function newId() {
+export function newId() {
   return (Math.floor(Math.random() * 2**64)).toString(16).padStart(16, "0");
 }
 

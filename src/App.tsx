@@ -2,7 +2,7 @@ import { HTMLAttributes, TargetedEvent } from "preact/compat";
 import { useEffect, useReducer, useRef } from "preact/hooks";
 import formatTime from "./formatTime";
 
-import { Timer, AppState, AppDispatch, reducer } from "./reducer";
+import { Timer, AppState, AppDispatch, reducer, newId } from "./reducer";
 
 export type TimerRowProps = {
   state: AppState;
@@ -49,7 +49,7 @@ function TimerRow({timer, dispatch, state}: TimerRowProps) {
         {
           timer?.isRunning ?
             formatTime(timer?.timeRemainingMs || 0) :
-            <LiveInput value={timer?.newTimeRemaining} setValue={(value) => dispatch?.({
+            <LiveInput value={timer?.newTimeRemaining || formatTime(timer?.timeRemainingMs || 0)} setValue={(value) => dispatch?.({
               updateTimer: {
                 id: timer!.id!,
                 newTimeRemaining: value,
@@ -125,9 +125,15 @@ function TimerButtonGroup({timer, dispatch}: TimerButtonGroupProps) {
 function createDefaultState(): AppState {
   return {
     loaded: false,
-    timers: [
-      { id: "1", timeLimitMs: 1000 * 60 * 60 * 24, timeRemainingMs: 1000 * 60 * 60 * 24, isRunning: false },
-    ],
+    timers: [...[1, 60].flatMap(i => [1, 5, 10, 15, 30].map(j => i * j)), ...[1,3,6,12,24].map(i => i*3600)].map(i => i * 1000).map((i) => ({
+      id: newId(),
+      timeLimitMs: i,
+      timeRemainingMs: i,
+      isRunning: false,
+      newTimeLimit: undefined,
+      newTimeRemaining: undefined,
+      confirmDelete: false,
+    })),
     newTimerForm: {
       newTime: "",
     },

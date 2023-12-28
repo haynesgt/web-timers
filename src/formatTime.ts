@@ -1,7 +1,7 @@
 export default function formatTime(ms: number): string {
   let str = "";
-  if (ms < 0) {
-    str += "-";
+  const negative = ms < 0;
+  if (negative) {
     ms = -ms;
   }
   let nextMs = ms;
@@ -26,5 +26,11 @@ export default function formatTime(ms: number): string {
     nextMs -= seconds * 1000;
   }
   str += `.${Math.round(nextMs).toString().padStart(3, "0")}`;
+  if (str[0] === "0") {
+    str = str.slice(1);
+  }
+  if (negative) {
+    str = "-" + str;
+  }
   return str;
 }
