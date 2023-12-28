@@ -21,7 +21,7 @@ body, input, button {
 }
 
 .timer-table td, .timer-table th {
-  width: 0%;
+  width: 30%;
   height: 0%;
   border: 1px solid black;
   position: relative;
@@ -45,7 +45,7 @@ body, input, button {
   right: 0;
   text-align: right;
   border: none;
-  padding: none;
+  padding: 0px;
 }
 
 .timer-table td button {
