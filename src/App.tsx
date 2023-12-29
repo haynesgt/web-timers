@@ -91,6 +91,14 @@ function TimerButtonGroup({timer, dispatch}: TimerButtonGroupProps) {
       },
     });
   }
+  function addTimeMs(ms: number) {
+    dispatch?.({
+      updateTimer: {
+        id: timer?.id!,
+        addTime: { ms }
+      },
+    });
+  }
   function startTimer() {
     dispatch?.({
       updateTimer: {
@@ -127,6 +135,7 @@ function TimerButtonGroup({timer, dispatch}: TimerButtonGroupProps) {
   return (
     <div className="button-group">
       <button onClick={resetTimer} disabled={timer?.timeLimitMs === timer?.timeRemainingMs}>{"<<"}</button>
+      <button onClick={() => addTimeMs(1000 * 60)}>+1m</button>
       <button onClick={stopTimer} disabled={!timer?.isRunning}>||</button>
       <button onClick={startTimer} disabled={timer?.isRunning}>&gt;</button>
       <button onClick={lapTimer} disabled={false}>v</button>
@@ -143,7 +152,7 @@ function createDefaultState(): AppState {
       timeLimitMs: i,
       timeRemainingMs: i,
       isRunning: false,
-      newTimeLimit: undefined,
+      newTimeLimit: formatTime(i, {short: true}),
       newTimeRemaining: undefined,
       confirmDelete: false,
     })),
@@ -197,9 +206,10 @@ function setIcon(text: string) {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  canvas.width = 32;
+  canvas.width = 40;
   canvas.height = 32;
   ctx.font = '24px Courier bold';
+  // ctx.fontStretch = 'ultra-condensed';
   ctx.fillStyle = 'white';
   ctx.roundRect(0, 0, canvas.width, canvas.height, 8);
   ctx.fill();
@@ -212,7 +222,7 @@ function setIcon(text: string) {
   document.head.insertAdjacentHTML("beforeend", `<link rel="icon" href="${canvas.toDataURL('image/png')}">`);
 }
 
-Object.assign(window, {setIcon});
+Object.assign(window, {setIcon, formatTime});
 
 
 const throttledSetIcon = (() => {
@@ -245,10 +255,10 @@ export default function App() {
     // set window title
     const runningTimers = state.timers?.filter((timer) => timer.isRunning) || [];
     const minTimeRemainingMs = Math.min(...runningTimers.filter((timer) => (timer.timeRemainingMs) || 0 > 0)?.map((timer) => timer.timeRemainingMs!));
-    const title = runningTimers?.length ? formatTime(minTimeRemainingMs || 0) : "Timer";
+    const title = runningTimers?.length ? formatTime(minTimeRemainingMs || 0, {short: true}) : "Timer";
     document.title = title;
     if (minTimeRemainingMs) {
-      throttledSetIcon(title.slice(0, 2));
+      throttledSetIcon(formatTime(minTimeRemainingMs || 0, {short: "very"}));
     }
   }, [state]);
   useEffect(() => {

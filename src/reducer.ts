@@ -43,6 +43,7 @@ export interface AppAction {
     pause?: true;
     delete?: true;
     lap?: true;
+    addTime?: { ms: number };
   };
   reorder?: string[];
 }
@@ -164,6 +165,10 @@ export function reducer(state: AppState, action: AppAction): AppState {
               } : {}),
               ...(action.updateTimer?.lap ? {
                 isRunning: false,
+              } : {}),
+              ...(action.updateTimer?.addTime ? {
+                timeRemainingMs: (timer.timeRemainingMs || 0) + action.updateTimer?.addTime.ms,
+                newTimeRemaining: formatTime((timer.timeRemainingMs || 0) + action.updateTimer?.addTime.ms),
               } : {}),
             },
             ...(action.updateTimer!.lap ? [

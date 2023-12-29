@@ -6,6 +6,7 @@ export class Alarm {
   audioCtx: AudioContext;
   nodes: AudioNode[];
   gainNode: GainNode;
+  compressor: DynamicsCompressorNode;
 
   // use oscillators to play an alarm
   constructor() {
@@ -13,8 +14,10 @@ export class Alarm {
 
     this.gainNode = this.audioCtx.createGain();
     this.gainNode.gain.value = 0;
-
     this.gainNode.connect(this.audioCtx.destination);
+
+    this.compressor = this.audioCtx.createDynamicsCompressor();
+    this.compressor.connect(this.gainNode);
 
     this.nodes = [];
   }
@@ -24,21 +27,21 @@ export class Alarm {
     const oldVal = this.gainNode.gain.value;
     this.cancel();
     this.gainNode.gain.setValueAtTime(oldVal, this.audioCtx.currentTime);
-    this.gainNode.gain.linearRampToValueAtTime(0.5, this.audioCtx.currentTime + .1);
+    this.gainNode.gain.linearRampToValueAtTime(1, this.audioCtx.currentTime + .1);
 
     this.nodes = _.range(8).map(i => {
       const startTime = this.audioCtx.currentTime + i * Math.random();
       const endTime = startTime + 2;
-      const midTime = (startTime + endTime) / 2;
+      // const midTime = (startTime + endTime) / 2;
 
       const gain = this.audioCtx.createGain();
       gain.gain.value = 0;
       gain.gain.setValueAtTime(gain.gain.value, startTime);
-      gain.gain.linearRampToValueAtTime(0.1 * (1 - i / 10), startTime + .01);
+      gain.gain.linearRampToValueAtTime(0.5 * (1 - i / 10), startTime + .01);
       gain.gain.linearRampToValueAtTime(0, endTime);
 
       const oscillator = this.audioCtx.createOscillator();
-      oscillator.type = 'sine';
+      oscillator.type = 'sawtooth';
       //oscillator.frequency.value = 2000 * (2 ** (2 * roundTo(Math.random() * 2 - 1, 1/12)));
       oscillator.frequency.value = 2000 * roundTo(Math.random() * 2 - 1, 1/12);
   
@@ -49,7 +52,7 @@ export class Alarm {
       oscillator.connect(gain);
       oscillator.start();
 
-      gain.connect(this.gainNode);
+      gain.connect(this.compressor);
       return gain;
     });
   }
