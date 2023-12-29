@@ -146,6 +146,7 @@ export function reducer(state: AppState, action: AppAction): AppState {
                 timeRemainingMs: timer.timeLimitMs,
                 newTimeRemaining: formatTime(timer.timeLimitMs || 0),
                 isNotifying: false,
+                isRunning: false,
               } : {}),
               ...(action.updateTimer?.start ? {
                 isRunning: true,

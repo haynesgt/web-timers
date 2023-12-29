@@ -24,7 +24,7 @@ export class Alarm {
     const oldVal = this.gainNode.gain.value;
     this.cancel();
     this.gainNode.gain.setValueAtTime(oldVal, this.audioCtx.currentTime);
-    this.gainNode.gain.linearRampToValueAtTime(1, this.audioCtx.currentTime + .1);
+    this.gainNode.gain.linearRampToValueAtTime(0.5, this.audioCtx.currentTime + .1);
 
     this.nodes = _.range(8).map(i => {
       const startTime = this.audioCtx.currentTime + i * Math.random();

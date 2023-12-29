@@ -193,10 +193,45 @@ class Notifier {
 }
 const notifier = new Notifier();
 
+function setIcon(text: string) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  canvas.width = 32;
+  canvas.height = 32;
+  ctx.font = '24px Courier bold';
+  ctx.fillStyle = 'white';
+  ctx.roundRect(0, 0, canvas.width, canvas.height, 8);
+  ctx.fill();
+  ctx.fillStyle = 'black';
+  const textWidth = ctx.measureText(text).width;
+  ctx.fillText(text, canvas.width / 2 - textWidth / 2, 24);
+  const iconElement = document.querySelector("link[rel='icon']");
+  if (iconElement) iconElement.remove();
+
+  document.head.insertAdjacentHTML("beforeend", `<link rel="icon" href="${canvas.toDataURL('image/png')}">`);
+}
+
+Object.assign(window, {setIcon});
+
+
+const throttledSetIcon = (() => {
+  let lastText = "";
+  let lastTime = 0;
+  return (text: string) => {
+    const now = Date.now();
+    if (text === lastText && now - lastTime < 1000) return;
+    setIcon(text);
+    lastText = text;
+    lastTime = now;
+  };
+})();
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, {});
   Object.assign(window, {state, dispatch});
   useEffect(() => {
+    // load saved state
     const savedState = localStorage.getItem("state");
     if (savedState) {
       dispatch({setState: JSON.parse(savedState)});
@@ -207,13 +242,21 @@ export default function App() {
   }, []);
   useEffect(() => {
     localStorage.setItem("state", JSON.stringify(state));
+    // set window title
+    const runningTimers = state.timers?.filter((timer) => timer.isRunning) || [];
+    const minTimeRemainingMs = Math.min(...runningTimers.filter((timer) => (timer.timeRemainingMs) || 0 > 0)?.map((timer) => timer.timeRemainingMs!));
+    const title = runningTimers?.length ? formatTime(minTimeRemainingMs || 0) : "Timer";
+    document.title = title;
+    if (minTimeRemainingMs) {
+      throttledSetIcon(title.slice(0, 2));
+    }
   }, [state]);
   useEffect(() => {
     let running = true;
     function update() {
       if (!running) return;
       dispatch({updateAt: Date.now()});
-      requestAnimationFrame(update);
+      setTimeout(update);
     }
     update();
     return () => {
