@@ -203,11 +203,11 @@ const throttledSetIcon = (() => {
 
 export function AppHelp() {
   return <div>
-    <p>You can drag timers to reorder them</p>
+    <p></p>
   </div>;
 }
 
-export default function App() {
+export default function TimerApp() {
   const [state, dispatch] = useReducer(reducer, {});
   Object.assign(window, {state, dispatch});
   useEffect(() => {
@@ -280,7 +280,7 @@ export default function App() {
             })
           }
           <tr>
-            <td colspan={3}>
+            <td colspan={4}>
               &nbsp;
               <div className="button-group">
                 <button onClick={() => dispatch({addTimer: true})}>+</button>
