@@ -28,23 +28,25 @@ export interface AppState {
   newTimerForm?: NewTimerForm;
 }
 
+export interface UpdateTimerAction {
+  id?: string;
+  newTimeLimit?: string;
+  newTimeRemaining?: string;
+  reset?: true;
+  start?: true;
+  pause?: true;
+  delete?: true;
+  lap?: true;
+  addTime?: { ms: number };
+}
+
 export interface AppAction {
   setState?: AppState;
   updateAt?: number;
   setNewTimerText?: string;
   addTimerTop?: boolean;
   addTimer?: boolean;
-  updateTimer?: {
-    id?: string;
-    newTimeLimit?: string;
-    newTimeRemaining?: string;
-    reset?: true;
-    start?: true;
-    pause?: true;
-    delete?: true;
-    lap?: true;
-    addTime?: { ms: number };
-  };
+  updateTimer?: UpdateTimerAction;
   reorder?: string[];
 }
 

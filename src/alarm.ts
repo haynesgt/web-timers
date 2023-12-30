@@ -41,7 +41,7 @@ export class Alarm {
       gain.gain.linearRampToValueAtTime(0, endTime);
 
       const oscillator = this.audioCtx.createOscillator();
-      oscillator.type = 'sawtooth';
+      oscillator.type = 'square';
       //oscillator.frequency.value = 2000 * (2 ** (2 * roundTo(Math.random() * 2 - 1, 1/12)));
       oscillator.frequency.value = 2000 * roundTo(Math.random() * 2 - 1, 1/12);
   

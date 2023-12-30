@@ -2,7 +2,7 @@ import { HTMLAttributes, TargetedEvent } from "preact/compat";
 import { useEffect, useReducer, useRef } from "preact/hooks";
 import formatTime from "./formatTime";
 
-import { Timer, AppState, AppDispatch, reducer, newId } from "./reducer";
+import { Timer, AppState, AppDispatch, reducer, newId, UpdateTimerAction } from "./reducer";
 import { Alarm } from "./alarm";
 
 function getAlarm() {
@@ -83,54 +83,20 @@ export type TimerButtonGroupProps = {
 };
 
 function TimerButtonGroup({timer, dispatch}: TimerButtonGroupProps) {
-  function resetTimer() {
+  function action(action: UpdateTimerAction) {
     dispatch?.({
       updateTimer: {
         id: timer?.id!,
-        reset: true,
+        ...action
       },
     });
   }
-  function addTimeMs(ms: number) {
-    dispatch?.({
-      updateTimer: {
-        id: timer?.id!,
-        addTime: { ms }
-      },
-    });
-  }
-  function startTimer() {
-    dispatch?.({
-      updateTimer: {
-        id: timer?.id!,
-        start: true,
-      },
-    });
-  }
-  function stopTimer() {
-    dispatch?.({
-      updateTimer: {
-        id: timer?.id!,
-        pause: true,
-      },
-    });
-  }
-  function lapTimer() {
-    dispatch?.({
-      updateTimer: {
-        id: timer?.id!,
-        lap: true,
-      },
-    });
-  }
-  function deleteTimer() {
-    dispatch?.({
-      updateTimer: {
-        id: timer?.id!,
-        delete: true,
-      },
-    });
-  }
+  const resetTimer = () => action({reset: true});
+  const addTimeMs = (ms: number) => action({addTime: {ms}});
+  const startTimer = () => action({start: true});
+  const stopTimer = () => action({pause: true});
+  const lapTimer = () => action({lap: true});
+  const deleteTimer = () => action({delete: true});
 
   return (
     <div className="button-group">
@@ -254,11 +220,15 @@ export default function App() {
     localStorage.setItem("state", JSON.stringify(state));
     // set window title
     const runningTimers = state.timers?.filter((timer) => timer.isRunning) || [];
-    const minTimeRemainingMs = Math.min(...runningTimers.filter((timer) => (timer.timeRemainingMs) || 0 > 0)?.map((timer) => timer.timeRemainingMs!));
+    const minTimeRemainingMs =
+      runningTimers.length === 0 ? undefined :
+      Math.min(...runningTimers.filter((timer) => (timer.timeRemainingMs) || 0 > 0)?.map((timer) => timer.timeRemainingMs!));
     const title = runningTimers?.length ? formatTime(minTimeRemainingMs || 0, {short: true}) : "Timer";
     document.title = title;
     if (minTimeRemainingMs) {
       throttledSetIcon(formatTime(minTimeRemainingMs || 0, {short: "very"}));
+    } else {
+      throttledSetIcon("T");
     }
   }, [state]);
   useEffect(() => {
