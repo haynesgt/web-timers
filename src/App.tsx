@@ -41,7 +41,10 @@ function TimerRow({timer, dispatch, state}: TimerRowProps) {
 
   }
   return (
-    <tr className="timer-row" draggable={true} data-timer-id={timer?.id} onDragEnd={onDragEnd} onDragOver={(e) => e.preventDefault()}>
+    <tr className="timer-row" data-timer-id={timer?.id} onDragOver={(e) => e.preventDefault()}>
+      <td>
+        <div draggable={true}  onDragEnd={onDragEnd}>↕</div>
+      </td>
       <td>
         {
           timer?.isRunning ?
@@ -91,21 +94,15 @@ function TimerButtonGroup({timer, dispatch}: TimerButtonGroupProps) {
       },
     });
   }
-  const resetTimer = () => action({reset: true});
-  const addTimeMs = (ms: number) => action({addTime: {ms}});
-  const startTimer = () => action({start: true});
-  const stopTimer = () => action({pause: true});
-  const lapTimer = () => action({lap: true});
-  const deleteTimer = () => action({delete: true});
 
   return (
     <div className="button-group">
-      <button onClick={resetTimer} disabled={timer?.timeLimitMs === timer?.timeRemainingMs}>{"<<"}</button>
-      <button onClick={() => addTimeMs(1000 * 60)}>+1m</button>
-      <button onClick={stopTimer} disabled={!timer?.isRunning}>||</button>
-      <button onClick={startTimer} disabled={timer?.isRunning}>&gt;</button>
-      <button onClick={lapTimer} disabled={false}>v</button>
-      <button onClick={deleteTimer} disabled={false}>{timer?.confirmDelete ? "x!?" : "x"}</button>
+      <button onClick={() => action({ reset: true })} disabled={timer?.timeLimitMs === timer?.timeRemainingMs}>{"<<"}</button>
+      <button onClick={() => action({ addTime: { ms: 1000 * 60 } })}>+1m</button>
+      <button onClick={() => action({ pause: true })} disabled={!timer?.isRunning}>||</button>
+      <button onClick={() => action({ start: true })} disabled={timer?.isRunning}>&gt;</button>
+      <button onClick={() => action({ lap: true })} disabled={false}>v</button>
+      <button onClick={() => action({ delete: true })} disabled={false}>{timer?.confirmDelete ? "x!?" : "x"}</button>
     </div>
   );
 }
@@ -203,6 +200,13 @@ const throttledSetIcon = (() => {
   };
 })();
 
+
+export function AppHelp() {
+  return <div>
+    <p>You can drag timers to reorder them</p>
+  </div>;
+}
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, {});
   Object.assign(window, {state, dispatch});
@@ -263,6 +267,7 @@ export default function App() {
     <div>
       <table className="timer-table">
           <tr>
+            <th></th>
             <th>Limit</th>
             <th>Remiaining</th>
             <th>Actions</th>
@@ -283,6 +288,7 @@ export default function App() {
             </td>
           </tr>
       </table>
+      <AppHelp/>
     </div>
   );
 }

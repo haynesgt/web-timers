@@ -11,7 +11,6 @@ body, input, button {
 
 .timer-table {
   width: 100%;
-  position: absolute;
   border-collapse: collapse;
   border: 1px solid black;
 }
@@ -21,6 +20,10 @@ body, input, button {
   width: 30%;
   border: 1px solid black;
   position: relative;
+}
+
+.timer-table td:first-child, .timer-table th:first-child {
+  width: 0%;
 }
 
 .timer-table td {
