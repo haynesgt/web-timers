@@ -1,3 +1,5 @@
 A simple timer app.
 
-View here: https://raw.githack.com/haynesgt/web-timers/main/release/index.html
+View here:
+- https://raw.githack.com/haynesgt/web-timers/main/release/index.html
+- https://timers.haynesgt.com/
